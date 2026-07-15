@@ -1,4 +1,5 @@
-const Parser = require('rss-parser');
+import Parser from 'rss-parser';
+
 const parser = new Parser();
 
 const FEEDS = [
@@ -32,7 +33,7 @@ const FEEDS = [
   },
 ];
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
 
@@ -43,20 +44,14 @@ module.exports = async (req, res) => {
       try {
         const parsed = await parser.parseURL(feed.url);
         const items = parsed.items.slice(0, 15).map((item, i) => {
-          // Clean up excerpt — strip HTML tags
           const rawExcerpt = item.contentSnippet || item.content || item.summary || '';
           const cleanExcerpt = rawExcerpt.replace(/<[^>]*>/g, '').trim();
           const excerpt = cleanExcerpt.length > 0
             ? cleanExcerpt.slice(0, 200).trim() + (cleanExcerpt.length > 200 ? '...' : '')
             : 'Click to read the full article.';
 
-          // Get the best URL
           const url = item.link || item.guid || feed.urlBase;
-
-          // Get the best author
           const author = item.creator || item['dc:creator'] || item.author || parsed.title || feed.source;
-
-          // Format date
           const date = item.pubDate
             ? new Date(item.pubDate).toLocaleDateString('en-US', { month: 'short', year: 'numeric' })
             : '';
@@ -82,7 +77,6 @@ module.exports = async (req, res) => {
       }
     }
 
-    // Shuffle the results
     for (let i = allItems.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [allItems[i], allItems[j]] = [allItems[j], allItems[i]];
@@ -93,4 +87,4 @@ module.exports = async (req, res) => {
     console.error('Feed error:', error);
     res.status(500).json({ error: 'Failed to fetch feeds', items: [] });
   }
-};
+}
