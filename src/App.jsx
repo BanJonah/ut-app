@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 
 const NAVY="#1B2A4A",NAVY_L="#243660",GOLD="#C9A84C",PARCH="#F5F0E8",PARCH_D="#EDE6D6",SAGE="#7A9E8A",COAL="#2D2D2D",GRAY="#8A8A8A",GRAY_L="#E8E8E8",WHITE="#FFFFFF";
 
@@ -34,17 +34,17 @@ const POOL=[
   {id:18,type:"devotional",source:"BYU Hawaii Devotionals",title:"Finding Light in Dark Times",author:"John S. Tanner",date:"2018",topic:["Faith","Adversity"],url:"https://devotional.byuh.edu",excerpt:"The Lord does not promise us an easy path, but He promises us a lighted one.",isNew:false},
   {id:19,type:"devotional",source:"Ensign College Devotionals",title:"Becoming a Covenant People",author:"Sharon Eubank",date:"2020",topic:["Covenants","Discipleship"],url:"https://www.ensign.edu/devotionals",excerpt:"Every covenant we make is an invitation to become more fully who God intends us to be.",isNew:true},
   {id:20,type:"studies",source:"BYU Studies",title:"Chiasmus in the Book of Mormon",author:"John W. Welch",date:"1969",topic:["Book of Mormon","Literary Structure"],url:"https://byustudies.byu.edu/article/chiasmus-in-the-book-of-mormon/",excerpt:"The discovery of chiasmus in the Book of Mormon stands as one of the most compelling evidences for its ancient authorship.",isNew:false},
-  {id:21,type:"historic",source:"Historic General Conferences",title:"The Articles of Faith",author:"Joseph Smith",date:"1842",topic:["Doctrine","Restoration"],url:"https://historicgeneralconferences.weebly.com",excerpt:"We believe the Bible to be the word of God as far as it is translated correctly; we also believe the Book of Mormon to be the word of God.",isNew:false},
-  {id:22,type:"historic",source:"Historic General Conferences",title:"On the Nature of God",author:"Lorenzo Snow",date:"1893",topic:["Doctrine","Eternal Progression"],url:"https://historicgeneralconferences.weebly.com",excerpt:"As man now is, God once was; as God now is, man may be.",isNew:false},
+  {id:21,type:"historic",source:"Historic General Conferences",title:"The Articles of Faith",author:"Joseph Smith",date:"1842",topic:["Doctrine","Restoration"],url:"https://historicalgeneralconferences.weebly.com/1843-april.html",excerpt:"We believe the Bible to be the word of God as far as it is translated correctly; we also believe the Book of Mormon to be the word of God.",isNew:false},
+  {id:22,type:"historic",source:"Historic General Conferences",title:"On the Nature of God",author:"Lorenzo Snow",date:"1893",topic:["Doctrine","Eternal Progression"],url:"https://historicalgeneralconferences.weebly.com/1893-april.html",excerpt:"As man now is, God once was; as God now is, man may be.",isNew:false},
   {id:23,type:"studies",source:"BYU Studies",title:"The Joseph Smith Papyri and the Book of Abraham",author:"Kerry Muhlestein",date:"2014",topic:["Book of Abraham","Apologetics"],url:"https://byustudies.byu.edu/article/god-learning-and-the-quest-for-eternal-life-the-book-of-abraham-and-the-lectures-on-faith/",excerpt:"A careful examination of the Joseph Smith Papyri reveals a sophisticated ancient text consistent with the Book of Abraham.",isNew:true},
   {id:24,type:"devotional",source:"BYU Idaho Devotionals",title:"Learning by Faith",author:"David A. Bednar",date:"2007",topic:["Education","Faith","Revelation"],url:"https://www.byui.edu/devotionals/david-a-bednar",excerpt:"Learning by faith requires spiritual, mental, and physical exertion and not just passive reception.",isNew:false},
-  {id:25,type:"historic",source:"Historic General Conferences",title:"The Keys of the Kingdom",author:"Wilford Woodruff",date:"1889",topic:["Priesthood","Keys","Restoration"],url:"https://historicgeneralconferences.weebly.com",excerpt:"The keys of this dispensation were committed to Joseph Smith and through him to the Twelve Apostles of this Church.",isNew:false},
+  {id:25,type:"historic",source:"Historic General Conferences",title:"The Keys of the Kingdom",author:"Wilford Woodruff",date:"1889",topic:["Priesthood","Keys","Restoration"],url:"https://historicalgeneralconferences.weebly.com/1889-april.html",excerpt:"The keys of this dispensation were committed to Joseph Smith and through him to the Twelve Apostles of this Church.",isNew:false},
   {id:26,type:"devotional",source:"BYU Hawaii Devotionals",title:"The Atonement and Our Daily Lives",author:"Tad R. Callister",date:"2015",topic:["Atonement","Discipleship"],url:"https://devotional.byuh.edu",excerpt:"The Atonement is not just for the spiritually wounded — it is the daily bread of the faithful disciple.",isNew:false},
   {id:27,type:"studies",source:"BYU Studies",title:"Wilford Woodruff and the Manifesto",author:"Thomas G. Alexander",date:"1988",topic:["Church History","Revelation"],url:"https://byustudies.byu.edu/article/the-manifesto-and-the-coming-forth-of-the-revelation-on-the-priesthood/",excerpt:"An examination of the historical and spiritual circumstances surrounding the 1890 Manifesto.",isNew:false},
   {id:28,type:"funfact",source:"U.T. Daily",title:"Did You Know?",author:null,date:null,topic:["Church History"],url:null,excerpt:"The Kirtland Temple took three years to build. Saints donated everything they had — some women cut up their finest china to mix into the plaster so it would sparkle in the light.",isNew:false},
   {id:29,type:"devotional",source:"Ensign College Devotionals",title:"Truth and the Educated Mind",author:"Henry B. Eyring",date:"2016",topic:["Education","Truth","Gospel Scholarship"],url:"https://www.ensign.edu/devotionals",excerpt:"Every truth you learn, wherever it comes from, belongs to the gospel of Jesus Christ.",isNew:false},
-  {id:30,type:"historic",source:"Historic General Conferences",title:"On Celestial Marriage",author:"Brigham Young",date:"1852",topic:["Church History","Doctrine"],url:"https://historicgeneralconferences.weebly.com",excerpt:"The principle which God has revealed is one of the most glorious principles ever revealed to man.",isNew:false},
-  {id:31,type:"conference",source:"General Conference",title:"The Atonement and the Journey of Mortality",author:"Elder D. Todd Christofferson",date:"Apr 2012",topic:["Atonement","Mortality"],url:"https://www.churchofjesuschrist.org/study/general-conference/2012/04/the-atonement-and-the-journey-of-mortality?lang=eng",excerpt:"The Atonement of Jesus Christ is the pivotal event of human history.",isNew:false},
+  {id:30,type:"historic",source:"Historic General Conferences",title:"On Celestial Marriage",author:"Brigham Young",date:"1852",topic:["Church History","Doctrine"],url:"https://historicalgeneralconferences.weebly.com/1852-august.html",excerpt:"The principle which God has revealed is one of the most glorious principles ever revealed to man.",isNew:false},
+  {id:31,type:"conference",source:"General Conference",title:"The Atonement and the Journey of Mortality",author:"D. Todd Christofferson",date:"Apr 2012",topic:["Atonement","Mortality"],url:"https://www.churchofjesuschrist.org/study/general-conference/2012/04/the-atonement-and-the-journey-of-mortality?lang=eng",excerpt:"The Atonement of Jesus Christ is the pivotal event of human history.",isNew:false},
   {id:32,type:"devotional",source:"BYU Speeches",title:"A Disciple's Life",author:"Neal A. Maxwell",date:"Feb 1995",topic:["Discipleship","Faith"],url:"https://speeches.byu.edu/talks/neal-a-maxwell/disciples-life/",excerpt:"The path of discipleship is the only path that leads to authentic and lasting happiness.",isNew:false},
   {id:33,type:"article",source:"FAIR",title:"The Book of Abraham and Egyptology",author:"FAIR Staff",date:"2023",topic:["Book of Abraham","Apologetics"],url:"https://www.fairlatterdaysaints.org/answers/Book_of_Abraham",excerpt:"A faithful examination of the relationship between the Book of Abraham and Egyptian papyri.",isNew:false},
   {id:34,type:"studies",source:"BYU Studies",title:"Joseph Smith and the Restoration of Priesthood Keys",author:"Steven C. Harper",date:"2010",topic:["Restoration","Priesthood"],url:"https://byustudies.byu.edu/article/joseph-smiths-receipt-of-the-melchizedek-priesthood/",excerpt:"A careful historical examination of how priesthood authority was restored through angelic ministration.",isNew:false},
@@ -52,7 +52,7 @@ const POOL=[
   {id:36,type:"funfact",source:"U.T. Daily",title:"Did You Know?",author:null,date:null,topic:["Church History"],url:null,excerpt:"Joseph Smith received the First Vision in the spring of 1820 at approximately age 14 — making him one of the youngest people in history to receive a divine theophany.",isNew:false},
   {id:37,type:"devotional",source:"BYU Speeches",title:"That Ye May Be One",author:"Henry B. Eyring",date:"Feb 1989",topic:["Unity","Discipleship"],url:"https://speeches.byu.edu/talks/henry-b-eyring/ye-may-one/",excerpt:"The Savior's prayer was that His people might be one as He and the Father are one.",isNew:false},
   {id:38,type:"papers",source:"Joseph Smith Papers",title:"King Follett Discourse",author:"Joseph Smith",date:"Apr 1844",topic:["Doctrine","Eternal Progression"],url:"https://www.josephsmithpapers.org/paper-summary/account-of-meeting-and-discourse-7-april-1844-as-reported-by-willard-richards/1",excerpt:"God himself was once as we are now, and is an exalted man, and sits enthroned in yonder heavens.",isNew:false},
-  {id:39,type:"article",source:"Interpreter Foundation",title:"Jonah as a Type of Christ",author:"Val Larsen",date:"2020",topic:["Old Testament","Jonah","Typology"],url:"https://interpreterfoundation.org/the-miracle-of-the-book-of-jonah/",excerpt:"The book of Jonah functions as the greatest typological prefiguration of the Atonement of Jesus Christ in the Old Testament.",isNew:true},
+  {id:39,type:"article",source:"Interpreter Foundation",title:"Jonah as a Type of Christ",author:"Val Larsen",date:"2020",topic:["Old Testament","Jonah","Typology"],url:"https://interpreterfoundation.org/the-miracle-of-the-book-of-jonah/",excerpt:"The book of Jonah functions as the greatest typological prefiguration of the Atonement in the Old Testament.",isNew:true},
   {id:40,type:"conference",source:"General Conference",title:"The Living Christ",author:"First Presidency and Quorum of the Twelve",date:"Jan 2000",topic:["Testimony","Christ"],url:"https://www.churchofjesuschrist.org/study/ensign/2000/01/the-living-christ-the-testimony-of-the-apostles?lang=eng",excerpt:"We offer our testimony of the reality of His matchless life and the infinite virtue of His great atoning sacrifice.",isNew:false},
 ];
 
@@ -203,25 +203,43 @@ function Nav({tab,setTab}){
 function Home({onSave}){
   const [filter,setFilter]=useState("All");
   const [pool]=useState(()=>shuffle(POOL));
+  const [liveItems,setLiveItems]=useState([]);
   const [items,setItems]=useState([]);
   const [next,setNext]=useState(0);
   const [loading,setLoading]=useState(false);
+  const [fetching,setFetching]=useState(true);
   const sentinel=useRef(null);
   const filters=["All","Devotionals","Conference","Articles","Books","Primary Sources","Historic","BYU Studies"];
   const typeMap={Devotionals:"devotional",Conference:"conference",Articles:"article",Books:"book","Primary Sources":"papers",Historic:"historic","BYU Studies":"studies"};
-  const active=filter==="All"?pool:pool.filter(i=>i.type===typeMap[filter]);
-  useEffect(()=>{setItems(getBatch(active,0));setNext(PAGE);},[filter]);
+
+  useEffect(()=>{
+    fetch('/api/feed')
+      .then(r=>r.json())
+      .then(data=>{if(data.items&&data.items.length>0)setLiveItems(data.items);})
+      .catch(()=>{})
+      .finally(()=>setFetching(false));
+  },[]);
+
+  const combinedPool=useMemo(()=>{
+    const all=[...liveItems,...pool];
+    return filter==="All"?all:all.filter(i=>i.type===typeMap[filter]);
+  },[liveItems,pool,filter]);
+
+  useEffect(()=>{setItems(getBatch(combinedPool,0));setNext(PAGE);},[combinedPool]);
+
   const more=useCallback(()=>{
     if(loading)return;
     setLoading(true);
-    setTimeout(()=>{setItems(p=>[...p,...getBatch(active,next)]);setNext(n=>n+PAGE);setLoading(false);},600);
-  },[loading,next,active]);
+    setTimeout(()=>{setItems(p=>[...p,...getBatch(combinedPool,next)]);setNext(n=>n+PAGE);setLoading(false);},600);
+  },[loading,next,combinedPool]);
+
   useEffect(()=>{
     if(!sentinel.current)return;
     const obs=new IntersectionObserver(e=>{if(e[0].isIntersecting)more();},{threshold:0.1});
     obs.observe(sentinel.current);
     return()=>obs.disconnect();
   },[more]);
+
   return(
     <div>
       <div style={{background:`linear-gradient(135deg,${NAVY} 0%,${NAVY_L} 100%)`,padding:"52px 20px 24px"}}>
@@ -235,6 +253,8 @@ function Home({onSave}){
       </div>
       <div style={{padding:"16px 20px 100px",background:PARCH,minHeight:"100vh"}}>
         <CFMBanner/>
+        {fetching&&<div style={{textAlign:"center",padding:"12px 0",fontSize:12,color:GRAY}}>Loading latest content…</div>}
+        {!fetching&&liveItems.length>0&&<div style={{fontSize:11,color:SAGE,fontWeight:700,letterSpacing:1,marginBottom:8}}>● LIVE — Updated from sources</div>}
         <div style={{fontSize:12,color:GRAY,fontWeight:700,letterSpacing:1,marginBottom:12}}>YOUR FEED</div>
         {items.map(item=><Card key={item.uid} item={item} onSave={onSave}/>)}
         <div ref={sentinel} style={{height:1}}/>
@@ -252,7 +272,7 @@ function Library(){
     {name:"BYU Hawaii Devotionals",desc:"Devotionals from BYU Hawaii",icon:"🎓",url:"https://devotional.byuh.edu",count:"500+"},
     {name:"Ensign College Devotionals",desc:"Devotionals from Ensign College",icon:"🎓",url:"https://www.ensign.edu/devotionals",count:"200+"},
     {name:"General Conference",desc:"Every talk from 1971 to present",icon:"⛪",url:"https://www.churchofjesuschrist.org/study/general-conference",count:"10,000+"},
-    {name:"Historic General Conferences",desc:"Early conference talks and sermons",icon:"📜",url:"https://historicgeneralconferences.weebly.com",count:"1800s+"},
+    {name:"Historic General Conferences",desc:"Early conference talks and sermons",icon:"📜",url:"https://historicalgeneralconferences.weebly.com",count:"1800s+"},
     {name:"Interpreter Foundation",desc:"Peer-reviewed Latter-day Saint scholarship",icon:"📖",url:"https://interpreterfoundation.org",count:"500+"},
     {name:"BYU Studies",desc:"Academic journal of Latter-day Saint scholarship",icon:"🔬",url:"https://byustudies.byu.edu",count:"60 yrs"},
     {name:"FAIR",desc:"Faithful answers to critical questions",icon:"🛡️",url:"https://www.fairlatterdaysaints.org",count:"1,000+"},
